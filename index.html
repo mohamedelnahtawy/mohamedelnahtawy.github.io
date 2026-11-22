@@ -46,7 +46,7 @@ main{display:grid;grid-template-columns:1.1fr .9fr;gap:1rem;min-height:0;align-i
 .intro{transform:translate3d(calc(var(--px,0)*-14px),calc(var(--py,0)*-10px),0)}
 .hello{margin:0 0 .25rem;font-weight:500;color:var(--muted);font-size:1.15rem;animation:fade .8s .2s backwards}
 h1{margin:0;font:800 clamp(3.2rem,min(11vw,17vh),9.5rem)/.92 var(--display);letter-spacing:-.04em}
-.ln{display:block;overflow:hidden;padding:0 .04em .1em;margin-bottom:-.1em}
+.ln{display:block;overflow:hidden;white-space:nowrap;padding:0 .04em .1em;margin-bottom:-.1em}
 .ch{display:inline-block;white-space:pre;
   background:linear-gradient(100deg,var(--ink) 25%,var(--a) 42%,var(--b) 58%,var(--ink) 75%);background-size:300% 100%;
   -webkit-background-clip:text;background-clip:text;color:transparent;
@@ -93,12 +93,22 @@ h1{margin:0;font:800 clamp(3.2rem,min(11vw,17vh),9.5rem)/.92 var(--display);lett
 
 @media (max-height:640px){.art{display:none}.blurb{display:none}}
 @media (max-width:48rem){
-  body{overflow:auto}
+  body{overflow-x:hidden;overflow-y:auto}
   html,body{height:auto}
-  .app{height:auto;min-height:100dvh}
-  main{grid-template-columns:1fr}
-  .orbit{height:18rem}
-  .projects{grid-template-columns:1fr}
+  .app{height:auto;min-height:100dvh;padding-top:.8rem}
+  main{grid-template-columns:1fr;grid-template-rows:auto minmax(13rem,1fr);align-items:start;gap:.5rem}
+  .orbit{height:100%;min-height:13rem}
+  .blurb{margin-top:.5rem}
+  .projects{grid-template-columns:repeat(3,1fr);gap:.5rem}
+  .art{height:.5rem}
+  .info{padding:.55rem .75rem .65rem}
+  .info h3{font-size:.95rem}
+  .info h3 span,.info p{display:none}
+}
+@media (max-width:40rem){
+  .mail em{display:none}
+  .status{font-size:.82rem;padding:.35rem .7rem}
+  .mail{padding:.35rem .7rem;font-size:.82rem}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.ch{color:var(--ink);background:none}}
 </style>
@@ -110,7 +120,7 @@ h1{margin:0;font:800 clamp(3.2rem,min(11vw,17vh),9.5rem)/.92 var(--display);lett
   <header>
     <div class="logo">MO</div>
     <div class="hdr-r">
-      <a class="mail" href="mailto:your.email@example.com" aria-label="Email me"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 8 8 6 8-6"/></svg><span>Email me</span><em>engmohamednahtawy@gmail.com</em></a>
+      <a class="mail" href="mailto:engmohamednahtawy@gmail.com" aria-label="Email me"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 8 8 6 8-6"/></svg><span>Say hello</span><em>your.email@example.com</em></a>
       <div class="status"><i></i>Open to work</div>
     </div>
   </header>
@@ -118,7 +128,7 @@ h1{margin:0;font:800 clamp(3.2rem,min(11vw,17vh),9.5rem)/.92 var(--display);lett
   <main>
     <section class="intro" id="intro">
       <p class="hello">Hello, I’m</p>
-      <h1 aria-label="Mohamed Elnahtawy" style="font-size: 60px;">
+      <h1 aria-label="Mohamed Elnahtawy" style="font-size: min(60px, calc((100vw - 2.5rem) / 6));">
   <span class="ln" style="font-size: inherit;">Mohamed</span><span class="ln" style="font-size: inherit;">Elnahtawy</span>
 </h1>
       <p class="role"><span id="typed">Junior Web Developer</span><span class="caret"></span></p>
@@ -203,7 +213,7 @@ h1{margin:0;font:800 clamp(3.2rem,min(11vw,17vh),9.5rem)/.92 var(--display);lett
   var orbit=document.getElementById('orbit'),ring=document.getElementById('ring'),chips=Array.prototype.slice.call(orbit.querySelectorAll('.chip')),OW=0,OH=0,ang=0;
   function sizeOrbit(){OW=orbit.clientWidth;OH=orbit.clientHeight}
   function spin(){
-    var R=Math.min(OW*.44,250),Ry=Math.min(R*(.36+.16*sy),OH*.42);
+    var R=Math.min(OW*.44,250);if(innerWidth<=768)R=Math.min(R,OW/2-56);var Ry=Math.min(R*(.36+.16*sy),OH*.42);
     ring.style.width=R*2+'px';ring.style.height=Ry*2*.9+'px';
     for(var i=0;i<chips.length;i++){
       var a=ang+i*6.2832/chips.length,z=Math.cos(a),k=(z+1)/2;

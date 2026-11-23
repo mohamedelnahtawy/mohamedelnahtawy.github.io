@@ -112,8 +112,8 @@ h1{margin:0;font:800 clamp(3.2rem,min(11vw,17vh),9.5rem)/.92 var(--display);lett
   .blurb{margin-top:.5rem}
   .projects{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.35fr);gap:.5rem}
   .art{height:.5rem}
-  .info{padding:.5rem .6rem .6rem}
-  .info h3{font-size:.95rem}
+  .info{padding:.5rem .5rem .6rem}
+  .info h3{font-size:min(.95rem,2.9vw)}
   .info h3 span,.info p{display:none}
   .plinks{flex-direction:column;align-items:flex-start;gap:.3rem;margin-top:.4rem}
   .plinks a{padding:.2rem .55rem;font-size:.74rem}
@@ -182,6 +182,22 @@ h1{margin:0;font:800 clamp(3.2rem,min(11vw,17vh),9.5rem)/.92 var(--display);lett
     var t=ln.textContent;ln.textContent='';ln.setAttribute('aria-hidden','true');
     Array.from(t).forEach(function(c){var s=document.createElement('span');s.className='ch';s.style.setProperty('--i',idx++);s.textContent=c;ln.appendChild(s)});
   });
+
+  /* phones only: shrink the name so every letter fits the screen */
+  var h1=document.querySelector('h1'),lns=h1.querySelectorAll('.ln'),baseFS=h1.style.fontSize,phone=matchMedia('(max-width:48rem)');
+  function fitName(){
+    h1.style.fontSize=baseFS;
+    if(!phone.matches)return;
+    for(var pass=0;pass<4;pass++){
+      var worst=1;
+      lns.forEach(function(ln){if(ln.scrollWidth>ln.clientWidth)worst=Math.min(worst,ln.clientWidth/ln.scrollWidth)});
+      if(worst>=1)break;
+      h1.style.fontSize=(parseFloat(getComputedStyle(h1).fontSize)*worst*.96)+'px';
+    }
+  }
+  fitName();
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitName);
+  addEventListener('load',fitName);
 
   /* typed roles */
   var roles=['Junior Software Engineer','Full-stack Developer','UX and UI tinkerer'],typed=document.getElementById('typed');
@@ -264,7 +280,7 @@ h1{margin:0;font:800 clamp(3.2rem,min(11vw,17vh),9.5rem)/.92 var(--display);lett
     draw();spin();
     requestAnimationFrame(frame);
   }
-  addEventListener('resize',resize);
+  addEventListener('resize',function(){resize();fitName()});
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(){setTimeout(resize,50)});
   resize();
   if(reduce){draw();spin()}else requestAnimationFrame(frame);
